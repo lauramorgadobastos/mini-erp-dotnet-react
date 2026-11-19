@@ -1,0 +1,30 @@
+name: Front-end CI (Vite / React)
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build-frontend:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout do Código
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Validar Estrutura Front-end
+        run: |
+          if [ -f "src/front/package.json" ]; then
+            cd src/front
+            npm ci
+            npm run build
+          else
+            echo "Projeto front-end ainda não inicializado na pasta src/front."
+          fi
