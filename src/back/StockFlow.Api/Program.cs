@@ -1,4 +1,5 @@
 var builder = WebApplication.CreateBuilder(args);
+builder.Services.AddScoped<StockFlow.Api.Repositories.ProdutoRepository>();
 
 builder.Services.AddControllers();
 
