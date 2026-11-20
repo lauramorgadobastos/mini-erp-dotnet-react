@@ -33,6 +33,7 @@ src/back/
 └── StockFlow.Api.Tests/
     ├── Estoque/              # Testes unitários das regras do módulo de estoque
     └── StockFlow.Api.Tests.csproj
+```
 
 ##  Módulos e Endpoints
 
@@ -98,6 +99,7 @@ Na pasta `src/back/`, há um arquivo de modelo `.env.example` com as variáveis 
 
 Para configurar seu ambiente local sem expor credenciais no Git:
 1. Copie `.env.example` para `.env` dentro de `src/back/`:
+
    ```powershell
    cd src/back
    Copy-Item .env.example .env
