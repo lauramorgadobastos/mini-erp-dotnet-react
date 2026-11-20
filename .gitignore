@@ -180,3 +180,69 @@ vite.config.ts.timestamp-*
 .idea/
 .DS_Store
 Thumbs.db
+
+# .NET / C# extras
+*.nupkg
+*.snk
+*.dbmdl
+*.jfm
+*.publish.xml
+*.DotSettings.user
+project.lock.json
+project.assets.json
+
+# ============================
+# Variáveis de ambiente e segredos
+# ============================
+.env
+.env.*
+!.env.example
+
+# ============================
+# .NET / C#
+# ============================
+**/bin/
+**/obj/
+**/out/
+**/publish/
+**/TestResults/
+**/coverage/
+
+*.nupkg
+*.snk
+*.dbmdl
+*.jfm
+*.publish.xml
+*.DotSettings.user
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+project.lock.json
+project.assets.json
+[Tt]humbs.db
+ehthumbs.db
+
+# ============================
+# Node / React / Vite
+# ============================
+**/node_modules/
+**/dist/
+**/dist-ssr/
+**/*.local
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# ============================
+# IDEs e Sistema Operativo
+# ============================
+.vs/
+.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+.idea/
+.DS_Store
