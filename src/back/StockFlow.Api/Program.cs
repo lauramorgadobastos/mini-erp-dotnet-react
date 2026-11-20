@@ -1,6 +1,7 @@
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddScoped<StockFlow.Api.Repositories.ProdutoRepository>();
 builder.Services.AddScoped<StockFlow.Api.Repositories.MovimentacaoRepository>();
+builder.Services.AddScoped<StockFlow.Api.Services.EstoqueRuleService>();
 
 builder.Services.AddControllers();
 
