@@ -7,6 +7,10 @@ interface RequestOptions extends RequestInit {
   query?: Record<string, string | number | boolean | undefined | null>;
 }
 
+interface ExtendedErrorResponse extends ApiErrorResponse {
+  mensagem?: string;
+}
+
 function buildUrl(path: string, query?: RequestOptions['query']): string {
   const normalizedPath = path.startsWith('/') ? path : `/${path}`;
   const url = new URL(`${API_BASE_URL}${normalizedPath}`);
@@ -20,6 +24,25 @@ function buildUrl(path: string, query?: RequestOptions['query']): string {
   }
 
   return url.toString();
+}
+
+function extractCleanErrorMessage(
+  errorData: ExtendedErrorResponse | undefined,
+  payload: unknown,
+  status: number
+): string {
+  const rawMessage =
+    errorData?.mensagem ||
+    errorData?.message ||
+    errorData?.detail ||
+    errorData?.title ||
+    (typeof payload === 'string' && payload.trim() ? payload : '');
+
+  if (!rawMessage) {
+    return `Erro na requisição (${status})`;
+  }
+
+  return rawMessage.split('\n')[0].trim();
 }
 
 async function request<T>(path: string, options: RequestOptions = {}): Promise<T> {
@@ -43,19 +66,17 @@ async function request<T>(path: string, options: RequestOptions = {}): Promise<T
 
   const contentType = response.headers.get('content-type') ?? '';
   const isJson = contentType.includes('application/json');
-  const payload = isJson ? await response.json().catch(() => null) : await response.text().catch(() => '');
+  const payload = isJson
+    ? await response.json().catch(() => null)
+    : await response.text().catch(() => '');
 
   if (!response.ok) {
-    const errorData = (typeof payload === 'object' && payload !== null
-      ? payload
-      : undefined) as ApiErrorResponse | undefined;
+    const errorData =
+      typeof payload === 'object' && payload !== null
+        ? (payload as ExtendedErrorResponse)
+        : undefined;
 
-    const message =
-      errorData?.message ||
-      errorData?.detail ||
-      errorData?.title ||
-      (typeof payload === 'string' && payload.trim() ? payload : `Erro na requisição (${response.status})`);
-
+    const message = extractCleanErrorMessage(errorData, payload, response.status);
     throw new ApiError(message, response.status, errorData);
   }
 
