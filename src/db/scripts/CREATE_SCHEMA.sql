@@ -69,30 +69,35 @@ VALUES
 (3, 'SAIDA', 5, 249.90, 1249.50, 'Vendas avulsas de balcão', NOW() - INTERVAL 1 DAY);
 
 -- Tabela de Lancamentos Financeiros
+DROP TABLE IF EXISTS lancamentos_financeiros;
 
-CREATE TABLE IF NOT EXISTS lancamentos_financeiros (
+CREATE TABLE lancamentos_financeiros (
     id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
     descricao VARCHAR(150) NOT NULL,
-    categoria VARCHAR(60) NOT NULL,
+    categoria VARCHAR(60) NOT NULL DEFAULT 'Estoque',
     tipo ENUM('RECEITA', 'DESPESA') NOT NULL,
     status ENUM('PENDENTE', 'PAGO', 'CANCELADO') NOT NULL DEFAULT 'PENDENTE',
     valor DECIMAL(12, 2) NOT NULL,
-    data_vencimento DATE NOT NULL,
+    data_vencimento DATE NOT NULL DEFAULT (CURRENT_DATE),
     data_pagamento DATE NULL,
     observacao VARCHAR(255) NULL,
+    origem VARCHAR(60) NULL,
+    movimentacao_id INT UNSIGNED NULL,
     criado_em DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
     atualizado_em DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     CONSTRAINT chk_lancamentos_valor CHECK (valor > 0),
     INDEX idx_lancamentos_tipo (tipo),
     INDEX idx_lancamentos_status (status),
     INDEX idx_lancamentos_vencimento (data_vencimento),
-    INDEX idx_lancamentos_categoria (categoria)
+    INDEX idx_lancamentos_categoria (categoria),
+    INDEX idx_lancamentos_origem (origem),
+    INDEX idx_lancamentos_movimentacao (movimentacao_id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
---  Carga Inicial de Lançamentos Financeiros
-INSERT INTO lancamentos_financeiros (descricao, categoria, tipo, status, valor, data_vencimento, data_pagamento, observacao) VALUES
-('Venda Pedido #1001', 'Vendas', 'RECEITA', 'PAGO', 3899.90, CURDATE() - INTERVAL 5 DAY, CURDATE() - INTERVAL 5 DAY, 'Pagamento via Pix'),
-('Venda Pedido #1002', 'Vendas', 'RECEITA', 'PENDENTE', 2598.00, CURDATE() + INTERVAL 10 DAY, NULL, 'Faturamento para 30 dias'),
-('Pagamento Fornecedor Dell', 'Fornecedores', 'DESPESA', 'PAGO', 14500.00, CURDATE() - INTERVAL 8 DAY, CURDATE() - INTERVAL 8 DAY, 'Compra de lotes de notebooks'),
-('Aluguel do Galpão', 'Infraestrutura', 'DESPESA', 'PENDENTE', 2500.00, CURDATE() + INTERVAL 5 DAY, NULL, 'Vencimento mensal recorrente'),
-('Serviço de Internet Fibra', 'Utilitários', 'DESPESA', 'PAGO', 199.90, CURDATE() - INTERVAL 2 DAY, CURDATE() - INTERVAL 2 DAY, 'Debito automático');
+-- Carga Inicial de Lançamentos Financeiros
+INSERT INTO lancamentos_financeiros (descricao, categoria, tipo, status, valor, data_vencimento, data_pagamento, observacao, origem) VALUES
+('Venda Pedido #1001', 'Vendas', 'RECEITA', 'PAGO', 3899.90, CURDATE() - INTERVAL 5 DAY, CURDATE() - INTERVAL 5 DAY, 'Pagamento via Pix', 'SEED'),
+('Venda Pedido #1002', 'Vendas', 'RECEITA', 'PENDENTE', 2598.00, CURDATE() + INTERVAL 10 DAY, NULL, 'Faturamento para 30 dias', 'SEED'),
+('Pagamento Fornecedor Dell', 'Fornecedores', 'DESPESA', 'PAGO', 14500.00, CURDATE() - INTERVAL 8 DAY, CURDATE() - INTERVAL 8 DAY, 'Compra de lotes de notebooks', 'SEED'),
+('Aluguel do Galpão', 'Infraestrutura', 'DESPESA', 'PENDENTE', 2500.00, CURDATE() + INTERVAL 5 DAY, NULL, 'Vencimento mensal recorrente', 'SEED'),
+('Serviço de Internet Fibra', 'Utilitários', 'DESPESA', 'PAGO', 199.90, CURDATE() - INTERVAL 2 DAY, CURDATE() - INTERVAL 2 DAY, 'Debito automático', 'SEED');
