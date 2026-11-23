@@ -1,6 +1,7 @@
 import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom';
 import { AppLayout } from '../components/layout/AppLayout';
 import { ProductsPage } from '../pages/ProductsPage';
+import { MovementsPage } from '../pages/MovementsPage';
 
 function PlaceholderModulePage({ name, endpointHint }: { name: string; endpointHint: string }) {
   return (
@@ -23,15 +24,7 @@ export function AppRoutes() {
         <Route path="/" element={<AppLayout />}>
           <Route index element={<Navigate to="/produtos" replace />} />
           <Route path="produtos" element={<ProductsPage />} />
-          <Route
-            path="movimentacoes"
-            element={
-              <PlaceholderModulePage
-                name="Movimentações de Estoque"
-                endpointHint="módulo previsto na Issue #13"
-              />
-            }
-          />
+          <Route path="movimentacoes" element={<MovementsPage />} />
           <Route
             path="financeiro"
             element={
