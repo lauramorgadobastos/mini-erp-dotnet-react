@@ -1,0 +1,164 @@
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap');
+
+:root {
+    --sf-bg-app: #f3f5f4;
+    --sf-surface: #ffffff;
+    --sf-surface-muted: #f8faf9;
+    --sf-border: #e2e7e5;
+    --sf-border-strong: #cbd5d0;
+    --sf-text-primary: #14201e;
+    --sf-text-secondary: #5a6965;
+    --sf-header-bg: #132220;
+    --sf-header-surface: #1c312e;
+    --sf-accent: #0f766e;
+    --sf-accent-hover: #0d5f58;
+    --sf-accent-soft: #e6f4f1;
+}
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    background-color: var(--sf-bg-app);
+    color: var(--sf-text-primary);
+    font-family: 'Plus Jakarta Sans', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+    -webkit-font-smoothing: antialiased;
+}
+
+.sf-shell {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+/* Topbar & Navegação */
+.sf-topbar {
+    background-color: var(--sf-header-bg);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    padding-top: 0.7rem;
+    padding-bottom: 0.7rem;
+}
+
+.sf-brand-mark {
+    width: 38px;
+    height: 38px;
+    border-radius: 8px;
+    background-color: var(--sf-accent);
+    color: #f0fdfa;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.15rem;
+    flex-shrink: 0;
+    border: 1px solid rgba(255, 255, 255, 0.14);
+}
+
+.sf-nav-list {
+    display: flex;
+    align-items: center;
+    gap: 0.35rem;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.sf-nav-link {
+    color: #b7c7c3;
+    border-radius: 6px;
+    padding: 0.5rem 0.9rem;
+    font-size: 0.9rem;
+    font-weight: 500;
+    line-height: 1.2;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    transition: background-color 0.16s ease, color 0.16s ease;
+    white-space: nowrap;
+}
+
+.sf-nav-link i {
+    font-size: 0.95rem;
+    line-height: 1;
+}
+
+.sf-nav-link:hover {
+    color: #ffffff;
+    background-color: var(--sf-header-surface);
+}
+
+.sf-nav-link.active {
+    color: #ffffff;
+    background-color: var(--sf-accent);
+    font-weight: 600;
+}
+
+/* Cabeçalho contextual da tela */
+.sf-context-bar {
+    background-color: var(--sf-surface);
+    border-bottom: 1px solid var(--sf-border);
+    padding: 1.25rem 0;
+}
+
+.sf-kicker {
+    font-size: 0.75rem;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--sf-accent);
+}
+
+/* Área principal */
+.sf-main {
+    flex: 1 0 auto;
+    padding: 1.75rem 0 2.25rem;
+}
+
+.sf-card {
+    background-color: var(--sf-surface);
+    border: 1px solid var(--sf-border);
+    border-radius: 10px;
+    box-shadow: 0 2px 10px rgba(20, 32, 30, 0.03);
+}
+
+.sf-btn-primary {
+    background-color: var(--sf-accent);
+    border-color: var(--sf-accent);
+    color: #ffffff;
+    font-weight: 500;
+}
+
+.sf-btn-primary:hover,
+.sf-btn-primary:focus {
+    background-color: var(--sf-accent-hover);
+    border-color: var(--sf-accent-hover);
+    color: #ffffff;
+}
+
+.sf-table thead th {
+    background-color: var(--sf-surface-muted);
+    color: var(--sf-text-secondary);
+    font-size: 0.78rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    border-bottom-color: var(--sf-border);
+    padding-top: 0.85rem;
+    padding-bottom: 0.85rem;
+}
+
+.sf-table tbody td {
+    padding-top: 0.9rem;
+    padding-bottom: 0.9rem;
+    border-bottom-color: #edf1ef;
+}
+
+/* Rodapé */
+.sf-footer {
+    background-color: var(--sf-surface);
+    border-top: 1px solid var(--sf-border);
+    color: var(--sf-text-secondary);
+    font-size: 0.84rem;
+}
