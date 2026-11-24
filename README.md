@@ -121,7 +121,7 @@ mini-erp-dotnet-react/
 
 ### 1. Clonar o Repositório
 ```bash
-git clone [https://github.com/SEU_USUARIO/mini-erp-dotnet-react.git](https://github.com/SEU_USUARIO/mini-erp-dotnet-react.git)
+git clone https://github.com/lauramorgadobastos/mini-erp-dotnet-react
 cd mini-erp-dotnet-react
 ```
 
