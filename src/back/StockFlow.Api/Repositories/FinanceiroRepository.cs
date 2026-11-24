@@ -4,6 +4,16 @@ using StockFlow.Api.Models;
 
 namespace StockFlow.Api.Repositories;
 
+public record CriarLancamentoFinanceiroRequest(
+    string Tipo,
+    string Descricao,
+    string? Categoria,
+    decimal Valor,
+    DateOnly? DataVencimento,
+    string? Observacao,
+    string? Origem
+);
+
 public class FinanceiroRepository
 {
     private readonly IConfiguration _configuration;
@@ -39,16 +49,25 @@ public class FinanceiroRepository
             cmd.Parameters.AddWithValue("@Tipo", tipoNormalizado);
 
         await using var reader = await cmd.ExecuteReaderAsync();
+        var origemOrdinal = reader.GetOrdinal("origem");
+        var movimentacaoIdOrdinal = reader.GetOrdinal("movimentacao_id");
+
         while (await reader.ReadAsync())
         {
+            var origem = reader.IsDBNull(origemOrdinal)
+                ? "MANUAL"
+                : reader.GetString(origemOrdinal);
+
+            var movimentacaoId = reader.IsDBNull(movimentacaoIdOrdinal)
+                ? (uint?)null
+                : reader.GetUInt32(movimentacaoIdOrdinal);
+
             lista.Add(new LancamentoFinanceiro
             {
                 Id = reader.GetUInt32("id"),
                 Tipo = reader.GetString("tipo"),
-                Origem = reader.GetString("origem"),
-                MovimentacaoId = reader.IsDBNull(reader.GetOrdinal("movimentacao_id"))
-                    ? null
-                    : reader.GetUInt32("movimentacao_id"),
+                Origem = origem,
+                MovimentacaoId = movimentacaoId,
                 Descricao = reader.GetString("descricao"),
                 Valor = reader.GetDecimal("valor"),
                 CriadoEm = reader.GetDateTime("criado_em")
@@ -56,6 +75,86 @@ public class FinanceiroRepository
         }
 
         return lista;
+    }
+
+    public async Task<LancamentoFinanceiro> CriarAsync(CriarLancamentoFinanceiroRequest request)
+    {
+        await using var conn = GetConnection();
+        await conn.OpenAsync();
+
+        var tipoNormalizado = request.Tipo.Trim().ToUpperInvariant();
+        var categoriaNormalizada = string.IsNullOrWhiteSpace(request.Categoria)
+            ? "Geral"
+            : request.Categoria.Trim();
+        var descricaoNormalizada = request.Descricao.Trim();
+        var origemNormalizada = string.IsNullOrWhiteSpace(request.Origem)
+            ? "MANUAL"
+            : request.Origem.Trim().ToUpperInvariant();
+        var observacaoNormalizada = string.IsNullOrWhiteSpace(request.Observacao)
+            ? null
+            : request.Observacao.Trim();
+        var dataVencimento = request.DataVencimento ?? DateOnly.FromDateTime(DateTime.Today);
+
+        const string sqlInsert = @"
+            INSERT INTO lancamentos_financeiros
+                (descricao, categoria, tipo, status, valor, data_vencimento, data_pagamento, observacao, origem, movimentacao_id)
+            VALUES
+                (@Descricao, @Categoria, @Tipo, @Status, @Valor, @DataVencimento, @DataPagamento, @Observacao, @Origem, @MovimentacaoId);
+            SELECT LAST_INSERT_ID();";
+
+        await using var cmd = new MySqlCommand(sqlInsert, conn);
+        cmd.Parameters.AddWithValue("@Descricao", descricaoNormalizada);
+        cmd.Parameters.AddWithValue("@Categoria", categoriaNormalizada);
+        cmd.Parameters.AddWithValue("@Tipo", tipoNormalizado);
+        cmd.Parameters.AddWithValue("@Status", "PAGO");
+        cmd.Parameters.AddWithValue("@Valor", request.Valor);
+        cmd.Parameters.AddWithValue("@DataVencimento", dataVencimento.ToDateTime(TimeOnly.MinValue));
+        cmd.Parameters.AddWithValue("@DataPagamento", DateTime.Today);
+        cmd.Parameters.AddWithValue("@Observacao", (object?)observacaoNormalizada ?? DBNull.Value);
+        cmd.Parameters.AddWithValue("@Origem", origemNormalizada);
+        cmd.Parameters.AddWithValue("@MovimentacaoId", DBNull.Value);
+
+        var idObj = await cmd.ExecuteScalarAsync();
+        var novoId = Convert.ToUInt32(idObj);
+
+        const string sqlSelect = @"
+            SELECT id, tipo, origem, movimentacao_id, descricao, valor, criado_em
+            FROM lancamentos_financeiros
+            WHERE id = @Id;";
+
+        await using var selectCmd = new MySqlCommand(sqlSelect, conn);
+        selectCmd.Parameters.AddWithValue("@Id", novoId);
+
+        await using var reader = await selectCmd.ExecuteReaderAsync();
+        if (await reader.ReadAsync())
+        {
+            var origemOrdinal = reader.GetOrdinal("origem");
+            var movimentacaoIdOrdinal = reader.GetOrdinal("movimentacao_id");
+
+            return new LancamentoFinanceiro
+            {
+                Id = reader.GetUInt32("id"),
+                Tipo = reader.GetString("tipo"),
+                Origem = reader.IsDBNull(origemOrdinal) ? "MANUAL" : reader.GetString(origemOrdinal),
+                MovimentacaoId = reader.IsDBNull(movimentacaoIdOrdinal)
+                    ? null
+                    : reader.GetUInt32(movimentacaoIdOrdinal),
+                Descricao = reader.GetString("descricao"),
+                Valor = reader.GetDecimal("valor"),
+                CriadoEm = reader.GetDateTime("criado_em")
+            };
+        }
+
+        return new LancamentoFinanceiro
+        {
+            Id = novoId,
+            Tipo = tipoNormalizado,
+            Origem = origemNormalizada,
+            MovimentacaoId = null,
+            Descricao = descricaoNormalizada,
+            Valor = request.Valor,
+            CriadoEm = DateTime.Now
+        };
     }
 
     public async Task<DashboardResumoDto> ObterResumoDashboardAsync()
