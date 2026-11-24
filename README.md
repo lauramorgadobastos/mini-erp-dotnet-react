@@ -5,12 +5,6 @@
 
 <h4 align="center">Sistema de Gestão Financeira e Controle de Estoque Full-Stack</h4>
 
-  <img src="./docs/videos/demonstracao-stockflow.gif" alt="Demonstração do StockFlow" width="100%">
-
-<p align="center">
- Aplicação full-stack para controle de catálogo, movimentações de estoque, lançamentos financeiros e indicadores operacionais, construída com foco em engenharia de software, automação de CI e boas práticas de portfólio.
-</p>
-
 <div align="center">
 
 [![.NET](https://img.shields.io/badge/.NET_10-512BD4?style=for-the-badge&logo=.net&logoColor=white)](https://dotnet.microsoft.com/)
@@ -19,10 +13,16 @@
 [![MySQL](https://img.shields.io/badge/MySQL-4479A1?style=for-the-badge&logo=mysql&logoColor=white)](https://www.mysql.com/)
 [![Bootstrap](https://img.shields.io/badge/Bootstrap_5-7952B3?style=for-the-badge&logo=bootstrap&logoColor=white)](https://getbootstrap.com/)
 [![Docker](https://img.shields.io/badge/Docker-2496ED?style=for-the-badge&logo=docker&logoColor=white)](https://www.docker.com/)
-[![GitHub Actions](https://img.shields.io/badge/GitHub_Actions-2088FF?style=for-the-badge&logo=githubactions&logoColor=white)](https://github.com/features/actions)
 [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg?style=for-the-badge)](LICENSE)
 
 </div>
+
+  <img src="./docs/videos/demonstracao-stockflow.gif" alt="Demonstração do StockFlow" width="100%">
+
+<p align="center">
+ Aplicação full-stack para controle de catálogo, movimentações de estoque, lançamentos financeiros e indicadores operacionais, construída com foco em engenharia de software, automação de CI e boas práticas de portfólio.
+</p>
+
 
 ---
 
